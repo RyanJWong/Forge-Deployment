@@ -10,6 +10,25 @@ $ git clone https://github.com/404-DAO/Example-Solidity-Sprint.git
 $ cd "Example-Solidity-Sprint"
 ```
 
+You have your choice of development frameworks for this sprint. The recommended tools are either Hardhat or Foundry.
+### Foundry
+
+Foundry is a command-line tool independent of NPM, meaning you must install it individually on your machine. Instructions on how to do so can be found
+on their website [getFoundry.sh](https://getFoundry.sh)
+
+`curl -L https://foundry.paradigm.xyz | bash`
+
+It contains tools you may find useful during this challenge including 
+`forge` - A testing-framework for smart-contracts in Solidity
+`cast` - A suite of command-line tools for common things in solidity
+`anvil` - a chain-forking CLI-tool similar to ganache
+
+We recommend `forge` and `cast` due to their fast runtime and excellent documentation. Once foundry is installed, no further configuration should be necesarry. Any code found in either `contracts`, `test`, or `script` will be compiled by using the `forge build` command.
+
+Foundry has its own scripting and deployment library as well which you can read up on 
+
+
+### Hardhat
 Install the necessary dependencies
 ```
 $ npm i
@@ -25,10 +44,13 @@ Run associated tests
 $ npx hardhat test
 ```
 
-Deploy locally
+Deploy to Goerli
 ```
-$ npx hardhat run scripts/deploy.js --network hardhat
+$ npx hardhat run scripts/deploy.js --network Goerli
 ```
+
+To deploy your contract or transaction you will need to place your private key in a `.env` file alongside your `hardhat.config.js` file under the variable `GOERLI_PRIVATE_KEY=[key]`
+
 
 ## Preparation
 
