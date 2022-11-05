@@ -17,7 +17,7 @@ jobs:
           version: nightly
 
       - name: Deploy
-        run: forge create contracts/call.sol:call --private-key ${{ secrets.PRIV }} --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --constructor-args 0xcfd9741867bad2f94c8bfb91518066436cbe6a20 
+        run: forge create contracts/call.sol:MerkleTree --private-key ${{ secrets.PRIV }} --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41  
 
       - name: Run snapshot
         run: forge snapshot
