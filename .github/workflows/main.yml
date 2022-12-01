@@ -1,6 +1,5 @@
 on:
-  branch_protection_rule:
-    types: [created, deleted]
+  push:
 name: test
 
 jobs:
