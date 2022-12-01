@@ -1,15 +1,19 @@
-pragma solidity ^0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.22 <0.9.0;
 
-contract Create2Contract {
-function requestData() public returns (bytes32 requestId)
-{
-   Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
-   request.add("get", "https://api.github.com/fruitbox12");
-   request.add("path", "status");    
-   return sendChainlinkRequestTo(oracle, request, fee);
-}
-function fulfill(bytes32 _requestId, uint256 _response) public recordChainlinkFulfillment(_requestId)
-{
-   response = _response;
-}
+contract Migrations {
+  address public owner = msg.sender;
+  uint public last_completed_migration;
+
+  modifier restricted() {
+    require(
+      msg.sender == owner,
+      "This function is restricted to the contract's owner"
+    );
+    _;
+  }
+
+  function setCompleted(uint completed) public restricted {
+    last_completed_migration = completed;
+  }
 }
