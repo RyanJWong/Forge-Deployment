@@ -6,7 +6,7 @@ contract Job {
         // to check if the job exists in jobStore
         // ref: https://ethereum.stackexchange.com/a/13029
         bool isValid;
-        // IPFS CID of the code file/folder
+        // Hypercore CID of the code file/folder
         string cid;
         // type of job -> python, wasm, etc.
         string type_;
