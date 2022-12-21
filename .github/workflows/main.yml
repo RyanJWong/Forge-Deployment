@@ -19,7 +19,7 @@ jobs:
       - name: Deploy
         run: forge create contracts/Migrations.sol:Migrations --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
       - name: Deploy
-        run: forge create contracts/Job.sol:Job --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
+        run: forge create contracts/Job.sol:WebRTC --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
 
       - name: Run snapshot
         run: forge snapshot
