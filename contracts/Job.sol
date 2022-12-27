@@ -39,11 +39,11 @@ abstract contract WebRTC is ERC1155 {
     _fractionalizationFactors[tokenId] = factor;
   }
 
-  // Mints a new ERC1155 token and assigns it the specified namespace.
-  function mint(address[] memory to, uint256[] memory tokenIds, uint256[] memory amounts) public {
-    require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
-    _mint(to, tokenIds, amounts);
-  }
+function mint(uint256 tokenId, uint256 amount, string memory data) public {
+  require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
+  // Call the _mint function provided by the ERC1155 contract to mint a new token.
+  _mint(msg.sender, tokenId, amount, data);
+}
 
 
   // Allows a user to exchange a fraction of an ERC1155 token for an equivalent amount of the corresponding
