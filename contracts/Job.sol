@@ -26,7 +26,7 @@ string public symbol;
 bool public investingAssetsLocked = false;
 bool public assetMint = false; 
 
-address public ERC721TOKENNAMEHERE;
+address public ens;
 
 mapping(uint256 => bool) public investedAsset;
 mapping(address => uint256) public mintedBalance;
@@ -66,8 +66,8 @@ constructor(
     function mint(uint256 _id, uint256 amount) public payable {
         require(!investingAssetsLocked, "The assets are locked and no more can be minted"); 
         require(assetMint, "Mint is not open for holders to mint more");
-        IERC721 TOKENNAME = IERC721(tokenname);
-        uint256 amountToken = tokenname.balanceOf(msg.sender);
+        IERC721 ens = IERC721(ens);
+        uint256 amountToken = ens.balanceOf(msg.sender);
         require(amountToken >= 1, "You are not a holder"); 
         uint256 mintedCount = mintedBalance[msg.sender]; 
         require(mintedCount + amount <= maxAllowed, "Max Fractions minted"); 
@@ -107,7 +107,7 @@ constructor(
     // @dev: Function to set contract of BRAQ
     //
     function setERC721HERE(address _newAddress) public onlyOwner {
-        ERC721TOKENNAMEHERE = _newAddress;
+        ens = _newAddress;
     }
     //
     // @dev: function to change the URI in the occurence of new assets being added. 
