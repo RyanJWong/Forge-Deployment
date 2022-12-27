@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 
-contract YOURTOKENNAMEHERE is ERC1155, Ownable {
+contract WebRTC is ERC1155, Ownable {
     using Strings for uint256; 
 
     struct InitialParameters {
