@@ -6,7 +6,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/utils/Ad
 
 // This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
 // functionality.
-contract NamespacedERC1155 is ERC1155 {
+contract WebRTC is ERC1155 {
   using SafeMath for uint256;
   using Address for address;
 
