@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
 // functionality.
@@ -59,8 +59,9 @@ function exchange(uint256 tokenId, uint256 amount) public {
   uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
 
   // Transfer the equivalent amount of the ERC20 token to the caller.
-ERC20 erc20 =  transfer(msg.sender, amount);
-
+    IERC20 token_ = IERC20(token);
+      token_.transferFrom(msg.sender, recipient, amount);
+    }
 
   // Burn the corresponding amount of the ERC1155 token.
   _burn(msg.sender, tokenId, amount);
