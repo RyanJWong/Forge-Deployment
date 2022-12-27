@@ -59,7 +59,7 @@ contract WebRTC is ERC1155 {
     msg.sender.transfer(equivalentAmount);
 
     // Burn the corresponding amount of the ERC1155 token.
-    burn(msg.sender, tokenId, amount);
+    _burn(msg.sender, tokenId, amount);
   }
 
 
