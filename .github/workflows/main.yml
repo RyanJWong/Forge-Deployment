@@ -17,7 +17,8 @@ jobs:
           version: nightly
       - name: deploy dep
         run: forge install OpenZeppelin/openzeppelin-contracts
-        
+      - name: git
+        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12
       - name: Deploy
         run: forge create contracts/Migrations.sol:Migrations --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
       - name: Deploy
