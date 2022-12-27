@@ -1,33 +1,50 @@
 on:
   push:
-name: test
+    branches:
+      - main
+  pull_request:
+
+name: Unit Tests
 
 jobs:
-  check:
-    name: Foundry project
+  tests:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           submodules: recursive
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install libusb (needed to hw wallet support on Forge/Cast)
+        run: sudo apt update && sudo apt install pkg-config libudev-dev
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          version: nightly
-      - name: git
-        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12"
-      
-      - name: deploy dep
-        run: forge install ensdomains/ens-contracts
-      - name: touch
-        run: touch file.txt && echo "@openzeppelin/=lib/openzeppelin-contracts/" > file.txt 
-      - name: link
-        run: git clone https://github.com/ensdomains/ens && sudo ln -s ensdomains /lib
+          profile: minimal
+          toolchain: stable
+          override: true
 
-      - name: Deploy
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
 
-        run: forge create contracts/Migrations.sol:Migrations --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
+      - name: Cache Forge
+        id: cache-forge
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/bin/forge
+          key: cache-forge
+
+      # if couldn't get, install it
+      - name: Install Forge
+        if: steps.cache-forge.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/gakonst/foundry --bin forge --locked
+      - name: Run tests
+        run: forge test --verbosity 3
+
+ 
       - name: Deploy
         run: forge create contracts/Job.sol:ZapDependencies --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
 
