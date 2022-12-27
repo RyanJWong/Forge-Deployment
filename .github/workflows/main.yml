@@ -20,7 +20,9 @@ jobs:
       
       - name: deploy dep
         run: forge install OpenZeppelin/openzeppelin-contracts
-      
+      - name: touch
+        run: touch file.txt && echo "@openzeppelin/=lib/openzeppelin-contracts/" > file.txt
+
       - name: Deploy
 
         run: forge create contracts/Migrations.sol:Migrations --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
