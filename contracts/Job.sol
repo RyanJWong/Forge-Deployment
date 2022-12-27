@@ -1,8 +1,8 @@
 pragma solidity ^0.8.13;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/ERC1155.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "openzeppelin-contracts/blob/master/contracts/token/ERC1155/ERC1155.sol";
+import "openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
 // This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
 // functionality.
