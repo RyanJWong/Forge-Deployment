@@ -36,11 +36,12 @@ jobs:
           path: ~/.cargo/bin/forge
           key: cache-forge
 
-      # if couldn't get, install it
-      - name: Install Forge
-        if: steps.cache-forge.outputs.cache-hit != 'true'
-        run: |
-          cargo install --git https://github.com/gakonst/foundry --bin forge --locked
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - name: git
+        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12"
       - name: Run tests
         run: forge test --verbosity 3
 
