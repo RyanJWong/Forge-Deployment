@@ -16,7 +16,7 @@ jobs:
         with:
           version: nightly
       - name: git
-        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12
+        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12"
       
       - name: deploy dep
         run: forge install OpenZeppelin/openzeppelin-contracts
