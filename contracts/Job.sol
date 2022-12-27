@@ -1,70 +1,134 @@
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+pragma solidity 0.8.15; 
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-// This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
-// functionality.
-abstract contract WebRTC is ERC1155 {
-  using SafeMath for uint256;
-  using Address for address;
-  address private _owner;
-
-  // The namespace for this token.
-  string private _namespace;
-
-  // Mapping from token ID to the fractionalization factor for that token.
-  mapping(uint256 => uint256) private _fractionalizationFactors;
-
-  // Mapping from token ID to the balance of the ERC20 token for that token.
-  mapping(uint256 => uint256) private _erc20Balances;
-
-  // The constructor sets the namespace and owner of the contract.
-  constructor(string memory namespace) {
-    _namespace = namespace;
-    _owner = msg.sender;
-  }
-
-  // Returns the namespace for this token.
-  function getNamespace() public view returns (string memory) {
-    return _namespace;
-  }
-
-  // Sets the fractionalization factor for a given token ID. Only the contract owner can do this.
-  function setFractionalizationFactor(uint256 tokenId, uint256 factor) public {
-    require(_owner == msg.sender, "Only the contract owner can set the fractionalization factor.");
-    require(factor > 0, "The fractionalization factor must be greater than zero.");
-    _fractionalizationFactors[tokenId] = factor;
-  }
-
-function mint(uint256 tokenId, uint256 amount, string memory data) public {
-  require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
-  // Convert the data payload from string to bytes.
-  bytes memory dataBytes = bytes(data);
-  // Call the _mint function provided by the ERC1155 contract to mint a new token.
-  _mint(msg.sender, tokenId, amount, dataBytes);
-}
+import "@openzeppelin/contracts/utils/Strings.sol"; 
+import "@openzeppelin/contracts/access/Ownable.sol"; 
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 
-  // Allows a user to exchange a fraction of an ERC1155 token for an equivalent amount of the corresponding
-  // ERC20 token.
-function exchange(uint256 tokenId, uint256 amount) public {
-  // Ensure that the fractionalization factor has been set for this token.
-  require(_fractionalizationFactors[tokenId] > 0, "The fractionalization factor has not been set for this token.");
+contract WEBRTC is ERC1155, Ownable {
+    using Strings for uint256; 
 
-  // Calculate the equivalent amount of the ERC20 token.
-  uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
+    struct InitialParameters {
+        string name; 
+        string symbol; 
+        string uri; 
+    }
 
-  // Transfer the equivalent amount of the ERC20 token to the caller.
-    IERC20 token_ = IERC20(token_);
-      token_.transferFrom(msg.sender,address recipient, amount);
-    
 
-  // Burn the corresponding amount of the ERC1155 token.
-  _burn(msg.sender, tokenId, amount);
-}
+uint16 public maxAllowed; 
+uint256 public price;
 
+string private baseURI; 
+string public name; 
+string public symbol;
+
+bool public investingAssetsLocked = false;
+bool public assetMint = false; 
+
+address public ENS;
+
+mapping(uint256 => bool) public investedAsset;
+mapping(address => uint256) public mintedBalance;
+
+event SetBaseURI(string indexed _uri); 
+
+constructor(
+    address _owner, 
+    InitialParameters memory initialParameters)
+    ERC1155(initialParameters.uri) {
+        name  = initialParameters.name;
+        symbol = initialParameters.symbol;
+        baseURI = initialParameters.uri; 
+        emit SetBaseURI(baseURI); 
+        transferOwnership(_owner); 
+        setERC721HERE("0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85");
+    }
+    //
+    // @dev: locks the assets forever, you can not revert this.
+    //
+
+    function lockAssets() public onlyOwner {
+        investingAssetsLocked = true; 
+    }
+    // 
+    // @dev: creates new asset for airdropping / minting
+    //
+
+    function newAsset(uint256 _id) public onlyOwner {
+        require(!investingAssetsLocked, "The assets are locked and no more can be created"); 
+        require(investedAsset[_id] == false, "This ID already has an asset created under it, try another number"); 
+        investedAsset[_id] = true; 
+    }
+    //
+    // @dev: Mint function for only BRAQFRND holders.
+    //
+    function mint(uint256 _id, uint256 amount) public payable {
+        require(!investingAssetsLocked, "The assets are locked and no more can be minted"); 
+        require(assetMint, "Mint is not open for holders to mint more");
+        IERC721 ENS = IERC721(tokenname);
+        uint256 amountToken = tokenname.balanceOf(msg.sender);
+        require(amountToken >= 1, "You are not a holder"); 
+        uint256 mintedCount = mintedBalance[msg.sender]; 
+        require(mintedCount + amount <= maxAllowed, "Max Fractions minted"); 
+        require(msg.value == price * amount, "Not enough ETH to complete tx"); 
+
+        mintedBalance[msg.sender]++; 
+        
+        _mint(msg.sender, _id, amount, ""); 
+    }
+    //
+    // @dev: Owner function to mint several assets at once for airdrop.
+    //
+    function mintBatch(uint256[] memory _ids, uint256[] memory _quantity) external onlyOwner {
+        require(!investingAssetsLocked, "The assets are locked and no more can be minted"); 
+        
+        _mintBatch(owner(), _ids, _quantity, ""); 
+    }
+    //
+    // @dev: Function to change the max allowed of mints for this round.
+    //
+    function changeMaxAllowed(uint16 _maxAllowed) public onlyOwner {
+        maxAllowed = _maxAllowed; 
+    }
+    //
+    // @dev: Function to allow holders to mint additional fractions.
+    //
+    function changeMintState() external onlyOwner {
+        assetMint = !assetMint; 
+    }
+    //
+    // @dev: Function to change the price of current asset to mint.
+    //
+    function setPrice(uint256 _price) public onlyOwner {
+        price = _price; 
+    }
+    //
+    // @dev: Function to set contract of BRAQ
+    //
+    function setERC721HERE(address _newAddress) public onlyOwner {
+        ENS = _newAddress;
+    }
+    //
+    // @dev: function to change the URI in the occurence of new assets being added. 
+    //
+    function setURI(string memory _uri) external onlyOwner {
+        baseURI = _uri;
+        emit SetBaseURI(baseURI); 
+    }
+    //
+    // @dev: concatenation of the URI to display on Opensea depending on token. 
+    //
+    function uri(uint256 _id) public view override returns (string memory) {
+        require(investedAsset[_id], "URI requested for invalid asset."); 
+        return bytes(baseURI).length > 0
+        ? string(abi.encodePacked(baseURI, _id.toString(), ".json"))
+        : baseURI; 
+    }
+    function withdrawETH() public onlyOwner {
+        (bool os, ) = payable(owner()).call{value: address(this).balance}('');
+        require(os); 
+    }
 }
