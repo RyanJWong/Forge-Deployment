@@ -40,7 +40,6 @@ abstract contract WebRTC is ERC1155 {
     _fractionalizationFactors[tokenId] = factor;
   }
 
-Copy code
 function mint(uint256 tokenId, uint256 amount, string memory data) public {
   require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
   // Convert the data payload from string to bytes.
