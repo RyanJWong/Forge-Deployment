@@ -48,20 +48,19 @@ function mint(uint256 tokenId, uint256 amount, string memory data) public {
 
   // Allows a user to exchange a fraction of an ERC1155 token for an equivalent amount of the corresponding
   // ERC20 token.
-  function exchange(uint256 tokenId, uint256 amount) public {
-    // Ensure that the fractionalization factor has been set for this token.
-    require(_fractionalizationFactors[tokenId] > 0, "The fractionalization factor has not been set for this token.");
+function exchange(uint256 tokenId, uint256 amount) public {
+  // Ensure that the fractionalization factor has been set for this token.
+  require(_fractionalizationFactors[tokenId] > 0, "The fractionalization factor has not been set for this token.");
 
-    // Calculate the equivalent amount of the ERC20 token.
-    uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
+  // Calculate the equivalent amount of the ERC20 token.
+  uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
 
-    // Transfer the equivalent amount of the ERC20 token to the caller.
-    _erc20Balances[tokenId] = _erc20Balances[tokenId].sub(equivalentAmount);
-    msg.sender.transfer(equivalentAmount);
+  // Transfer the equivalent amount of the ERC20 token to the caller.
+  ERC20 erc20 = ERC20(_erc20Contracts[tokenId]);
+  erc20.transfer(msg.sender, equivalentAmount);
 
-    // Burn the corresponding amount of the ERC1155 token.
-    _burn(msg.sender, tokenId, amount);
-  }
-
+  // Burn the corresponding amount of the ERC1155 token.
+  _burn(msg.sender, tokenId, amount);
+}
 
 }
