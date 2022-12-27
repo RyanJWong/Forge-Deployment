@@ -42,7 +42,7 @@ constructor(
         baseURI = initialParameters.uri; 
         emit SetBaseURI(baseURI); 
         transferOwnership(_owner); 
-        setERC721HERE("0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85");
+        setERC721HERE(0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85);
     }
     //
     // @dev: locks the assets forever, you can not revert this.
