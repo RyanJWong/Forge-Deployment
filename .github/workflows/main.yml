@@ -23,7 +23,7 @@ jobs:
       - name: touch
         run: touch file.txt && echo "@openzeppelin/=lib/openzeppelin-contracts/" > file.txt 
       - name: link
-        run: ln openzeppelin-contracts /lib
+        run: git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git openzeppelin-contracts && ln openzeppelin-contracts /lib
 
       - name: Deploy
 
