@@ -21,7 +21,9 @@ jobs:
       - name: deploy dep
         run: forge install OpenZeppelin/openzeppelin-contracts
       - name: touch
-        run: touch file.txt && echo "@openzeppelin/=lib/openzeppelin-contracts/" > file.txt
+        run: touch file.txt && echo "@openzeppelin/=lib/openzeppelin-contracts/" > file.txt 
+      - name: link
+        run: ln openzeppelin-contracts /lib
 
       - name: Deploy
 
