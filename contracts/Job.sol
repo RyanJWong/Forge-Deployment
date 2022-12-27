@@ -1,8 +1,8 @@
 pragma solidity ^0.6.12;
 
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "https://github.com/gnosis/gnosis-safe-contracts/contracts/GnosisSafe.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/utils/SafeERC20.sol";
+import "https://github.com/safe-global/safe-contracts/blob/main/contracts/GnosisSafe.sol";
 
 // Replace "MyToken" with the name of your ERC20 token
 contract WebRTC is SafeERC20 {
