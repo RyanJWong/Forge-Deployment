@@ -64,7 +64,7 @@ function exchange(uint256 tokenId, uint256 amount) public {
     
 
   // Burn the corresponding amount of the ERC1155 token.
-  _burn(account msg.sender, id tokenId,amount amount);
+  _burn(msg.sender, tokenId, amount);
 }
 
 }
