@@ -22,8 +22,8 @@ abstract contract WebRTC is ERC1155 {
   mapping(uint256 => uint256) private _erc20Balances;
 
   // The constructor sets the namespace and owner of the contract.
-  constructor(string memory namespace) public {
-    _namespace = abi.encodePacked(namespace, ".zap");
+  constructor(string memory namespace) internal {
+    _namespace = namespace;
     _owner = msg.sender;
   }
 
@@ -42,7 +42,7 @@ abstract contract WebRTC is ERC1155 {
   // Mints a new ERC1155 token and assigns it the specified namespace.
   function mint(address[] memory to, uint256[] memory tokenIds, uint256[] memory amounts) public {
     require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
-    ERC1155.mint(to, tokenIds, amounts);
+    _mint(to, tokenIds, amounts);
   }
 
 
