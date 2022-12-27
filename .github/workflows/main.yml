@@ -42,8 +42,7 @@ jobs:
           version: nightly
       - name: git
         run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12"
-      - name: Run tests
-        run: forge test --verbosity 3
+
 
  
       - name: Deploy
