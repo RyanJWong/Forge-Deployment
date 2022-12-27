@@ -1,14 +1,13 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC1155/SafeERC1155.sol";
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
 // This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
 // functionality.
-abstract contract WebRTC is safeERC1155 {
+abstract contract WebRTC is ERC1155 {
   using SafeMath for uint256;
   using Address for address;
   address private _owner;
@@ -43,7 +42,7 @@ abstract contract WebRTC is safeERC1155 {
   // Mints a new ERC1155 token and assigns it the specified namespace.
   function mint(address[] memory to, uint256[] memory tokenIds, uint256[] memory amounts) public {
     require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
-    SafeERC1155.mint(to, tokenIds, amounts);
+    ERC1155.mint(to, tokenIds, amounts);
   }
 
 
