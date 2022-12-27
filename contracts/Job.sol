@@ -23,7 +23,7 @@ abstract contract WebRTC is ERC1155 {
   mapping(uint256 => uint256) private _erc20Balances;
 
   // The constructor sets the namespace and owner of the contract.
-  constructor(string memory namespace) internal {
+  constructor(string memory namespace) {
     _namespace = namespace;
     _owner = msg.sender;
   }
@@ -59,8 +59,8 @@ function exchange(uint256 tokenId, uint256 amount) public {
   uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
 
   // Transfer the equivalent amount of the ERC20 token to the caller.
-ERC20 erc20 = ERC20(address(_erc20Balances[tokenId]));
-  erc20.transfer(msg.sender, equivalentAmount);
+ERC20 erc20 =  transfer(address recipient, uint256 amount) external returns (bool);
+
 
   // Burn the corresponding amount of the ERC1155 token.
   _burn(msg.sender, tokenId, amount);
