@@ -1,55 +1,39 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.6.12;
 
-// This contract includes functions for signaling, such as sending offers and answers,
-// as well as functions for managing the state of the connection.
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "https://github.com/gnosis/gnosis-safe-contracts/contracts/GnosisSafe.sol";
 
-contract WebRTC {
-    // The address of the client that initiated the connection
-    address public initiator;
+// Replace "MyToken" with the name of your ERC20 token
+contract WebRTC is SafeERC20 {
+  using SafeMath for uint256;
 
-    // The address of the client that accepted the connection
-    address public acceptor;
+  constructor() public {
+    // Initialize the contract with the necessary information for your ERC20 token
+  }
 
-    // The state of the connection (disconnected, connecting, connected)
-    enum State { Disconnected, Connecting, Connected }
-    State public state;
+  // Replace "STAKING_CURVE" with the name of your staking curve function
+  function STAKING_CURVE(uint256 stake) public view returns (uint256) {
+    // Implement your staking curve function here. This function should take in a stake amount and return the corresponding number of tokens to mint.
+  }
 
-    // The WebRTC offer message
-    string public offer;
+  // Replace "TOKEN_RECIPIENT" with the address of the recipient of the minted tokens
+  address public TOKEN_RECIPIENT = 0x33315110cF11F770a0FFDCa69151A15774985408;
 
-    // The WebRTC answer message
-    string public answer;
+  // Replace "TOKEN_AMOUNT" with the number of tokens to mint
+  uint256 public TOKEN_AMOUNT = 1000;
 
-    // Constructor function that sets the initiator as the contract owner
-    constructor() public {
-        initiator = msg.sender;
-        state = State.Disconnected;
-    }
+  // Replace "SAFE_ADDRESS" with the address of the Gnosis Safe contract
+  address public SAFE_ADDRESS = 0x33315110cF11F770a0FFDCa69151A15774985408;
 
-    // Function that allows the initiator to send an offer message
-    function sendOffer(string memory _offer) public {
-        require(msg.sender == initiator, "Only the initiator can send an offer");
-        require(state == State.Disconnected, "Cannot send offer in current state");
-        offer = _offer;
-        state = State.Connecting;
-    }
+  function mintTokens(uint256 stake) public {
+    // Calculate the number of tokens to mint based on the staking curve function
+    TOKEN_AMOUNT = STAKING_CURVE(stake);
 
-    // Function that allows the acceptor to send an answer message and complete the connection
-    function sendAnswer(string memory _answer) public {
-        require(msg.sender != initiator, "Only the acceptor can send an answer");
-        require(state == State.Connecting, "Cannot send answer in current state");
-        acceptor = msg.sender;
-        answer = _answer;
-        state = State.Connected;
-    }
+    // Mint the tokens to the recipient
+    _mint(TOKEN_RECIPIENT, TOKEN_AMOUNT);
 
-    // Function that allows either client to disconnect the connection
-    function disconnect() public {
-        require(state == State.Connected, "Cannot disconnect in current state");
-        require(msg.sender == initiator || msg.sender == acceptor, "Only the initiator or acceptor can disconnect the connection");
-        state = State.Disconnected;
-        offer = "";
-        answer = "";
-        acceptor = address(0);
-    }
+    // Execute the "executeTransaction" function of the Gnosis Safe contract, passing in the necessary parameters for the transaction
+    GnosisSafe.executeTransaction(SAFE_ADDRESS, 0, TOKEN_RECIPIENT, TOKEN_AMOUNT, "0x", 0, 0, 0, 0, 0, 0, 0);
+  }
 }
