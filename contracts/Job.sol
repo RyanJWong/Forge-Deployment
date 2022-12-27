@@ -1,8 +1,8 @@
-pragma solidity ^0.6.12;
+pragma solidity ^0.8.13;
 
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC1155.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/utils/Address.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/ERC1155.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 
 // This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
 // functionality.
@@ -69,3 +69,4 @@ function exchange(uint256 tokenId, uint256 amount) public {
   burn(msg.sender, tokenId, amount);
 }
 
+}
