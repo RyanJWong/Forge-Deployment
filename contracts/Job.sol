@@ -59,8 +59,8 @@ function exchange(uint256 tokenId, uint256 amount) public {
   uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
 
   // Transfer the equivalent amount of the ERC20 token to the caller.
-    IERC20 token_ = IERC20(token);
-      token_.transferFrom(msg.sender, recipient, amount);
+    IERC20 token_ = IERC20(token_);
+      token_.transferFrom(msg.sender,address recipient, amount);
     
 
   // Burn the corresponding amount of the ERC1155 token.
