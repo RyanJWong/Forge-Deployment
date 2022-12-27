@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.4;
 
 
-import "@ens/contracts/registry/ENSRegistry.sol";
+import "https://raw.githubusercontent.com/ensdomains/ens-contracts/master/contracts/registry/ENSRegistry.sol";
 import "@ens/contracts/registry/FIFSRegistrar.sol";
 import "@ens/contracts/registry/ReverseRegistrar.sol";
 import "@ens/contracts/resolvers/PublicResolver.sol";
