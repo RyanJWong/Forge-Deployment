@@ -1,39 +1,71 @@
 pragma solidity ^0.6.12;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/utils/SafeERC20.sol";
-import "https://github.com/safe-global/safe-contracts/blob/main/contracts/GnosisSafe.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC1155.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/utils/Address.sol";
 
-// Replace "MyToken" with the name of your ERC20 token
-contract WebRTC is SafeERC20 {
+// This contract extends the ERC1155 contract from OpenZeppelin to add a namespace and fractionalization
+// functionality.
+contract NamespacedERC1155 is ERC1155 {
   using SafeMath for uint256;
+  using Address for address;
 
-  constructor() public {
-    // Initialize the contract with the necessary information for your ERC20 token
+  // The namespace for this token.
+  string private _namespace;
+
+  // Mapping from token ID to the fractionalization factor for that token.
+  mapping(uint256 => uint256) private _fractionalizationFactors;
+
+  // Mapping from token ID to the address of the ERC20 contract for that token.
+  mapping(uint256 => address) private _erc20Contracts;
+
+  // The constructor sets the namespace and owner of the contract.
+  constructor(string memory namespace) public {
+    _namespace = namespace + ".zap";
+    _owner = msg.sender;
   }
 
-  // Replace "STAKING_CURVE" with the name of your staking curve function
-  function STAKING_CURVE(uint256 stake) public view returns (uint256) {
-    // Implement your staking curve function here. This function should take in a stake amount and return the corresponding number of tokens to mint.
+  // Returns the namespace for this token.
+  function getNamespace() public view returns (string memory) {
+    return _namespace;
   }
 
-  // Replace "TOKEN_RECIPIENT" with the address of the recipient of the minted tokens
-  address public TOKEN_RECIPIENT = 0x33315110cF11F770a0FFDCa69151A15774985408;
-
-  // Replace "TOKEN_AMOUNT" with the number of tokens to mint
-  uint256 public TOKEN_AMOUNT = 1000;
-
-  // Replace "SAFE_ADDRESS" with the address of the Gnosis Safe contract
-  address public SAFE_ADDRESS = 0x33315110cF11F770a0FFDCa69151A15774985408;
-
-  function mintTokens(uint256 stake) public {
-    // Calculate the number of tokens to mint based on the staking curve function
-    TOKEN_AMOUNT = STAKING_CURVE(stake);
-
-    // Mint the tokens to the recipient
-    _mint(TOKEN_RECIPIENT, TOKEN_AMOUNT);
-
-    // Execute the "executeTransaction" function of the Gnosis Safe contract, passing in the necessary parameters for the transaction
-    GnosisSafe.executeTransaction(SAFE_ADDRESS, 0, TOKEN_RECIPIENT, TOKEN_AMOUNT, "0x", 0, 0, 0, 0, 0, 0, 0);
+  // Sets the fractionalization factor for a given token ID. Only the contract owner can do this.
+  function setFractionalizationFactor(uint256 tokenId, uint256 factor) public {
+    require(_owner == msg.sender, "Only the contract owner can set the fractionalization factor.");
+    require(factor > 0, "The fractionalization factor must be greater than zero.");
+    _fractionalizationFactors[tokenId] = factor;
   }
+
+  // Sets the ERC20 contract address for a given token ID. Only the contract owner can do this.
+  function setERC20Contract(uint256 tokenId, address contractAddress) public {
+    require(_owner == msg.sender, "Only the contract owner can set the ERC20 contract address.");
+    require(Address(contractAddress).isContract(), "The contract address must be a contract.");
+    _erc20Contracts[tokenId] = contractAddress;
+  }
+
+  // Mints a new ERC1155 token and assigns it the specified namespace.
+  function mint(address[] memory to, uint256[] memory tokenIds, uint256[] memory amounts) public {
+    require(_owner == msg.sender, "Only the contract owner can mint new tokens.");
+    super.mint(to, tokenIds, amounts);
+  }
+
+  // Allows a user to exchange a fraction of an ERC1155 token for an equivalent amount of the corresponding
+  // ERC20 token.
+ // Allows a user to exchange a fraction of an ERC1155 token for an equivalent amount of the corresponding
+// ERC20 token.
+function exchange(uint256 tokenId, uint256 amount) public {
+  // Ensure that the fractionalization factor and ERC20 contract address have been set for this token.
+  require(_fractionalizationFactors[tokenId] > 0, "The fractionalization factor or ERC20 contract address has not been set for this token.");
+
+  // Calculate the equivalent amount of the ERC20 token.
+  uint256 equivalentAmount = amount.mul(_fractionalizationFactors[tokenId]);
+
+  // Transfer the equivalent amount of the ERC20 token to the caller.
+  ERC20 erc20 = ERC20(_erc20Contracts[tokenId]);
+  erc20.safeTransfer(msg.sender, equivalentAmount);
+
+  // Burn the corresponding amount of the ERC1155 token.
+  burn(msg.sender, tokenId, amount);
 }
+
