@@ -66,7 +66,7 @@ constructor(
     function mint(uint256 _id, uint256 amount) public payable {
         require(!investingAssetsLocked, "The assets are locked and no more can be minted"); 
         require(assetMint, "Mint is not open for holders to mint more");
-        IERC721 ens = IERC721(ens);
+        IERC721 ENS = IERC721(ens);
         uint256 amountToken = ens.balanceOf(msg.sender);
         require(amountToken >= 1, "You are not a holder"); 
         uint256 mintedCount = mintedBalance[msg.sender]; 
