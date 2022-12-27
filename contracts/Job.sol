@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.4;
 
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "@ensdomains/ens/contracts/FIFSRegistrar.sol";
-import "@ensdomains/ens/contracts/ReverseRegistrar.sol";
-import "@ensdomains/resolver/contracts/PublicResolver.sol";
+import "../ens-contracts/contracts/ENSRegistry.sol";
+import "../ens-contracts/contracts/FIFSRegistrar.sol";
+import "../ens-contracts/contracts/ReverseRegistrar.sol";
+import "../ens-contracts/contracts/PublicResolver.sol";
 
 // Construct a set of test ENS contracts.
 contract ZapDependencies {
