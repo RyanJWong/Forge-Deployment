@@ -61,10 +61,10 @@ function exchange(uint256 tokenId, uint256 amount) public {
   // Transfer the equivalent amount of the ERC20 token to the caller.
     IERC20 token_ = IERC20(token);
       token_.transferFrom(msg.sender, recipient, amount);
-    }
+    
 
   // Burn the corresponding amount of the ERC1155 token.
-  _burn(msg.sender, tokenId, amount);
+  _burn(account msg.sender, id tokenId,amount amount);
 }
 
 }
