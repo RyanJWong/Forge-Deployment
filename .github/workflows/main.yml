@@ -15,18 +15,12 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      - name: git
-        run: git config --global user.email "dylanwong007@gmail.com" && git config --global user.name "fruitbox12"
-      
 
-      - name: link
-        run: git clone https://github.com/ensdomains/ens-contracts && sudo ln -s ens-contracts /lib
-      - name: touch
- 
-
+      - name: Deploy
         run: forge create contracts/Migrations.sol:Migrations --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
       - name: Deploy
-        run: forge create contracts/Job.sol:ZapDependencies --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
+        run: forge create contracts/Job.sol:Swagtag --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
 
       - name: Run snapshot
         run: forge snapshot
+
