@@ -78,7 +78,7 @@ contract Airbnb {
         revert("property is not available for the selected dates");
         }
       } 
-    function markPropertyAsInactive(uint256 _propertyId) public {
+    function markPropertyAsInactive() public {
       require(
         properties[_propertyId].owner == msg.sender,
         "THIS IS NOT YOUR PROPERTY"
