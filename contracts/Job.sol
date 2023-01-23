@@ -112,16 +112,3 @@ contract Airbnb {
     emit NewBooking(_propertyId, bookingId++);
 
   }
-
-  /**
-   * @dev Take down the property from the market
-   * @param _propertyId Property ID
-   */
-  function markPropertyAsInactive(uint256 _propertyId) public {
-    require(
-      properties[_propertyId].owner == msg.sender,
-      "THIS IS NOT YOUR PROPERTY"
-    );
-    properties[_propertyId].isActive = false;
-  }
-}
