@@ -1,164 +1,127 @@
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.9;
+pragma solidity ^0.5.7;
 
 contract Airbnb {
-    address public owner;
-    uint256 private counter;
+  struct Property{
+  string name;
+  string description;
+  bool isActive;      // is property active
+  uint256 price;      // per day price in wei (1 ether = 10^18 wei)
+  address owner;      // Owner of the property
+  // Is the property booked on a particular day,
+  // For the sake of simplicity, we assign 0 to Jan 1, 1 to Jan 2 and so on
+  // so isBooked[31] will denote whether the property is booked for Feb 1
+  bool[] isBooked;
+  }
+  // Unique and sequential propertyId for every new property
+  uint256 public propertyId;
 
-    constructor() {
-        counter = 0;
-        owner = msg.sender;
-    }
+  // mapping of propertyId to Property object
+  mapping(uint256 => Property) public properties;
 
-    struct rentalInfo {
-        string name;
-        string city;
-        string lat;
-        string long;
-        string unoDescription;
-        string dosDescription;
-        string imgUrl;
-        uint256 maxGuests;
-        uint256 pricePerDay;
-        string[] datesBooked;
-        uint256 id;
-        address renter;
-    }
+  struct Booking {
+  uint256 bookingId;
+  uint256 checkInDate;
+  uint256 checkoutDate;
+  address user;
+  }
+  // mapping of bookingId to Booking object
+  mapping(uint256 => Booking) public bookings;
 
-    event rentalCreated(
-        string name,
-        string city,
-        string lat,
-        string long,
-        string unoDescription,
-        string dosDescription,
-        string imgUrl,
-        uint256 maxGuests,
-        uint256 pricePerDay,
-        string[] datesBooked,
-        uint256 id,
-        address renter
+  // This event is emitted when a new property is put up for sale
+  event NewProperty (
+    uint256 indexed propertyId
+  );
+
+  // This event is emitted when a NewBooking is made
+  event NewBooking (
+    uint256 indexed propertyId,
+    uint256 indexed bookingId
+  );
+
+  /**
+    * @dev Put up your funky space on the market
+    * @param name Name of the property
+    * @param description Short description of your property
+    * @param price Price per day in wei (1 ether = 10^18 wei)
+    */
+
+  /* 1. rentOutProperty */
+  function rentOutproperty(string memory name, string memory description, uint256 price) public {
+    Property memory property = Property(name, description, true, price, msg.sender, new bool[](365));
+
+    properties[propertyId] = property;
+
+    emit NewProperty(propertyId++);
+  }
+
+  /**
+   * @dev Make an Airbnb booking
+   * @param _propertyId id of the property to rent out
+   * @param checkInDate Check-in date
+   * @param checkoutDate Check-out date
+   */
+
+  /* 2. rentProperty */
+  function rentProperty(uint256 _propertyId, uint256 checkInDate, uint256 checkoutDate) public payable {
+    // Retrieve "property" object from the storage
+    Property storage property = properties[_propertyId];
+
+    // Assert that property is active
+    require(
+      property.isActive == true,
+      "property with this ID is not active"
     );
+    // Assert that property is available for the dates
+    for (uint256 i = checkInDate; i < checkoutDate; i++) {
+      if (property.isBooked[i] == true) {
+        // if property is booked on a day, revert the transaction
+        revert("property is not available for the selected dates");
+        }
+      } 
+    function markPropertyAsInactive(uint256 _propertyId) public {
+      require(
+        properties[_propertyId].owner == msg.sender,
+        "THIS IS NOT YOUR PROPERTY"
+      );
+      properties[_propertyId].isActive = false;
+    }
 
-    event newDatesBooked(
-        string[] datesBooked,
-        uint256 id,
-        address booker,
-        string city,
-        string imgUrl
+    // 2 intern functions _sendFunds && _createBooking to rentProperty
+
+    // 1. _sendFunds
+    function _sendFunds (address beneficiary, uint256 value) internal {
+      // address(uint160()) is a weird solidity quirk
+      // Read more here: https://solidity.readthedocs.io/en/v0.5.10/050-breaking-changes.html?highlight=address%20payable#explicitness-requirements
+    address(uint160(beneficiary)).transfer(value);
+    }
+
+    // 2. _createBooking
+    function _createBooking(uint256 _propertyId, uint256 checkInDate, uint256 checkoutDate) internal {
+      // Create a new booking object
+    bookings[bookingId] = Booking(_propertyId, checkInDate, checkoutDate, msg.sender);
+
+      // Retrieve `property` object from the storage
+    Property storage property = properties[_propertyId];
+
+      // Mark the property booked on the requested dates
+    for (uint256 i = checkInDate; i < checkoutDate; i++) {
+      property.isBooked[i] = true;
+    }
+
+      // Emit an event to notify clients
+    emit NewBooking(_propertyId, bookingId++);
+
+  }
+
+  /**
+   * @dev Take down the property from the market
+   * @param _propertyId Property ID
+   */
+  function markPropertyAsInactive(uint256 _propertyId) public {
+    require(
+      properties[_propertyId].owner == msg.sender,
+      "THIS IS NOT YOUR PROPERTY"
     );
-
-    mapping(uint256 => rentalInfo) rentals;
-    uint256[] public rentalIds;
-
-    function addRentals(
-        string memory name,
-        string memory city,
-        string memory lat,
-        string memory long,
-        string memory unoDescription,
-        string memory dosDescription,
-        string memory imgUrl,
-        uint256 maxGuests,
-        uint256 pricePerDay,
-        string[] memory datesBooked
-    ) public {
-        require(
-            msg.sender == owner,
-            "Only owner of smart contract can put up rentals"
-        );
-        rentalInfo storage newRental = rentals[counter];
-        newRental.name = name;
-        newRental.city = city;
-        newRental.lat = lat;
-        newRental.long = long;
-        newRental.unoDescription = unoDescription;
-        newRental.dosDescription = dosDescription;
-        newRental.imgUrl = imgUrl;
-        newRental.maxGuests = maxGuests;
-        newRental.pricePerDay = pricePerDay;
-        newRental.datesBooked = datesBooked;
-        newRental.id = counter;
-        newRental.renter = owner;
-
-        rentalIds.push(counter);
-
-        emit rentalCreated(
-            name,
-            city,
-            lat,
-            long,
-            unoDescription,
-            dosDescription,
-            imgUrl,
-            maxGuests,
-            pricePerDay,
-            datesBooked,
-            counter,
-            owner
-        );
-        counter++;
-    }
-
-    function checkBookings(uint256 id, string[] memory newBookings)
-        private
-        view
-        returns (bool)
-    {
-        for (uint256 i = 0; i < newBookings.length; i++) {
-            for (uint256 j = 0; j < rentals[id].datesBooked.length; j++) {
-                if (
-                    keccak256(abi.encodePacked(rentals[id].datesBooked[j])) ==
-                    keccak256(abi.encodePacked(newBookings[i]))
-                ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function addDatesBooked(uint256 id, string[] memory newBookings)
-        public
-        payable
-    {
-        require(id < counter, "No such Rental");
-        require(
-            checkBookings(id, newBookings),
-            "Already Booked For Requested Date"
-        );
-        require(
-            msg.value ==
-                (rentals[id].pricePerDay * 1 ether * newBookings.length),
-            "Please submit the asking price in order to complete the purchase"
-        );
-
-        for (uint256 i = 0; i < newBookings.length; i++) {
-            rentals[id].datesBooked.push(newBookings[i]);
-        }
-
-        payable(owner).transfer(msg.value);
-        emit newDatesBooked(
-            newBookings,
-            id,
-            msg.sender,
-            rentals[id].city,
-            rentals[id].imgUrl
-        );
-    }
-
-    function getRental(uint256 id)
-        public
-        view
-        returns (
-            string memory,
-            uint256,
-            string[] memory
-        )
-    {
-        require(id < counter, "No such Rental");
-
-        rentalInfo storage s = rentals[id];
-        return (s.name, s.pricePerDay, s.datesBooked);
-    }
+    properties[_propertyId].isActive = false;
+  }
 }
