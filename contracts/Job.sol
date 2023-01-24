@@ -1,114 +1,236 @@
-pragma solidity ^0.5.7;
+// SPDX-License-Identifier: MIT
 
-contract Airbnb {
-  struct Property{
-  string name;
-  string description;
-  bool isActive;      // is property active
-  uint256 price;      // per day price in wei (1 ether = 10^18 wei)
-  address owner;      // Owner of the property
-  // Is the property booked on a particular day,
-  // For the sake of simplicity, we assign 0 to Jan 1, 1 to Jan 2 and so on
-  // so isBooked[31] will denote whether the property is booked for Feb 1
-  bool[] isBooked;
-  }
-  // Unique and sequential propertyId for every new property
-  uint256 public propertyId;
+pragma solidity 0.8.10;
 
-  // mapping of propertyId to Property object
-  mapping(uint256 => Property) public properties;
+import "./PriceConverter.sol";
 
-  struct Booking {
-  uint256 bookingId;
-  uint256 checkInDate;
-  uint256 checkoutDate;
-  address user;
-  }
-  // mapping of bookingId to Booking object
-  mapping(uint256 => Booking) public bookings;
+contract DecentralAirbnb is PriceConverter {
+    //--------------------------------------------------------------------
+    // VARIABLES
 
-  // This event is emitted when a new property is put up for sale
-  event NewProperty (
-    uint256 indexed propertyId
-  );
+    address public admin;
 
-  // This event is emitted when a NewBooking is made
-  event NewBooking (
-    uint256 indexed propertyId,
-    uint256 indexed bookingId
-  );
+    uint256 public listingFee;
+    uint256 private _rentalIds;
 
-  /**
-    * @dev Put up your funky space on the market
-    * @param name Name of the property
-    * @param description Short description of your property
-    * @param price Price per day in wei (1 ether = 10^18 wei)
-    */
+    struct RentalInfo {
+        uint256 id;
+        address owner;
+        string name;
+        string city;
+        string latitude;
+        string longitude;
+        string description;
+        string imgUrl;
+        uint256 maxNumberOfGuests;
+        uint256 pricePerDay;
+    }
 
-  /* 1. rentOutProperty */
-  function rentOutproperty(string memory name, string memory description, uint256 price) public {
-    Property memory property = Property(name, description, true, price, msg.sender, new bool[](365));
+    struct Booking {
+        address renter;
+        uint256 fromTimestamp;
+        uint256 toTimestamp;
+    }
 
-    properties[propertyId] = property;
+    RentalInfo[] public rentals;
 
-    emit NewProperty(propertyId++);
-  }
+    mapping(uint256 => Booking[]) rentalBookings;
 
-  /**
-   * @dev Make an Airbnb booking
-   * @param _propertyId id of the property to rent out
-   * @param checkInDate Check-in date
-   * @param checkoutDate Check-out date
-   */
+    //--------------------------------------------------------------------
+    // EVENTS
 
-  /* 2. rentProperty */
-  function rentProperty(uint256 _propertyId, uint256 checkInDate, uint256 checkoutDate) public payable {
-    // Retrieve "property" object from the storage
-    Property storage property = properties[_propertyId];
-
-    // Assert that property is active
-    require(
-      property.isActive == true,
-      "property with this ID is not active"
+    event NewRentalCreated(
+        uint256 id,
+        address owner,
+        string name,
+        string city,
+        string latitude,
+        string longitude,
+        string description,
+        string imgUrl,
+        uint256 maxGuests,
+        uint256 pricePerDay,
+        uint256 timestamp
     );
-    // Assert that property is available for the dates
-    for (uint256 i = checkInDate; i < checkoutDate; i++) {
-      if (property.isBooked[i] == true) {
-        // if property is booked on a day, revert the transaction
-        revert("property is not available for the selected dates");
+
+    event NewBookAdded(
+        uint256 rentalId,
+        address renter,
+        uint256 bookDateStart,
+        uint256 bookDateEnd,
+        uint256 timestamp
+    );
+
+    //--------------------------------------------------------------------
+    // ERRORS
+
+    error DecentralAirbnb__OnlyAdmin();
+    error DecentralAirbnb__InvalidFee();
+    error DecentralAirbnb__InvalidRentalId();
+    error DecentralAirbnb__InvalidBookingPeriod();
+    error DecentralAirbnb__AlreadyBooked();
+    error DecentralAirbnb__InsufficientAmount();
+    error DecentralAirbnb__TransferFailed();
+
+    //--------------------------------------------------------------------
+    // MODIFIERS
+
+    modifier onlyAdmin() {
+        if(msg.sender != admin) revert DecentralAirbnb__OnlyAdmin();
+        _;
+    }
+
+    modifier isRental(uint _id) {
+        if(_id >= _rentalIds) revert DecentralAirbnb__InvalidRentalId();
+        _;
+    }
+
+    //--------------------------------------------------------------------
+    // CONSTRUCTOR
+
+    constructor(uint256 _listingFee, address _priceFeedAddress) {
+        admin = msg.sender;
+        listingFee = _listingFee;
+        priceFeedAddress = _priceFeedAddress;
+    }
+
+    //--------------------------------------------------------------------
+    // FUNCTIONS
+
+    function addRental(
+        string memory _name,
+        string memory _city,
+        string memory _latitude,
+        string memory _longitude,
+        string memory _description,
+        string memory _imgUrl,
+        uint256 _maxGuests,
+        uint256 _pricePerDay
+    ) external payable {
+        if(msg.value != listingFee) revert DecentralAirbnb__InvalidFee();
+        uint256 _rentalId = _rentalIds;
+
+        RentalInfo memory _rental = RentalInfo(
+            _rentalId,
+            msg.sender,
+            _name,
+            _city,
+            _latitude,
+            _longitude,
+            _description,
+            _imgUrl,
+            _maxGuests,
+            _pricePerDay
+        );
+
+        rentals.push(_rental);
+        _rentalIds++;
+
+        emit NewRentalCreated(
+            _rentalId,
+            msg.sender,
+            _name,
+            _city,
+            _latitude,
+            _longitude,
+            _description,
+            _imgUrl,
+            _maxGuests,
+            _pricePerDay,
+            block.timestamp
+        );
+    }
+
+    function bookDates(
+        uint256 _id,
+        uint256 _fromDateTimestamp,
+        uint256 _toDateTimestamp
+    ) external payable isRental(_id) {
+
+        RentalInfo memory _rental = rentals[_id];
+
+        uint256 bookingPeriod = (_toDateTimestamp - _fromDateTimestamp) /
+            1 days;
+        // can't book less than 1 day
+        if(bookingPeriod < 1) revert DecentralAirbnb__InvalidBookingPeriod();
+        
+        uint256 _amount = convertFromUSD(_rental.pricePerDay) * bookingPeriod;
+
+        if(msg.value != _amount) revert DecentralAirbnb__InsufficientAmount();
+        if(checkIfBooked(_id, _fromDateTimestamp, _toDateTimestamp)) revert DecentralAirbnb__AlreadyBooked();
+
+        rentalBookings[_id].push(
+            Booking(msg.sender, _fromDateTimestamp, _toDateTimestamp)
+        );
+
+        (bool success,) = payable(_rental.owner).call{value: msg.value}("");
+        if (!success) revert DecentralAirbnb__TransferFailed();
+
+        emit NewBookAdded(
+            _id,
+            msg.sender,
+            _fromDateTimestamp,
+            _toDateTimestamp,
+            block.timestamp
+        );
+    }
+
+    function checkIfBooked(
+        uint256 _id,
+        uint256 _fromDateTimestamp,
+        uint256 _toDateTimestamp
+    ) internal view returns (bool) {
+
+        Booking[] memory _rentalBookings = rentalBookings[_id];
+
+        // Make sure the rental is available for the booking dates
+        for (uint256 i = 0; i < _rentalBookings.length;) {
+            if (
+                ((_fromDateTimestamp >= _rentalBookings[i].fromTimestamp) &&
+                    (_fromDateTimestamp <= _rentalBookings[i].toTimestamp)) ||
+                ((_toDateTimestamp >= _rentalBookings[i].fromTimestamp) &&
+                    (_toDateTimestamp <= _rentalBookings[i].toTimestamp))
+            ) {
+                return true;
+            }
+            unchecked {
+                ++i;
+            }
         }
-      } 
-    function markPropertyAsInactive() public {
-      require(
-        properties[_propertyId].owner == msg.sender,
-        "THIS IS NOT YOUR PROPERTY"
-      );
-      properties[_propertyId].isActive = false;
+        return false;
     }
 
-    // 2 intern functions _sendFunds && _createBooking to rentProperty
-
-    // 1. _sendFunds
-    function _sendFunds (address beneficiary, uint256 value) internal {
-      // address(uint160()) is a weird solidity quirk
-      // Read more here: https://solidity.readthedocs.io/en/v0.5.10/050-breaking-changes.html?highlight=address%20payable#explicitness-requirements
-    address(uint160(beneficiary)).transfer(value);
+    function getRentals() external view returns (RentalInfo[] memory) {
+        return rentals;
     }
 
-    // 2. _createBooking
-    function _createBooking(uint256 _propertyId, uint256 checkInDate, uint256 checkoutDate) internal {
-      // Create a new booking object
-    bookings[bookingId] = Booking(_propertyId, checkInDate, checkoutDate, msg.sender);
-
-      // Retrieve `property` object from the storage
-    Property storage property = properties[_propertyId];
-
-      // Mark the property booked on the requested dates
-    for (uint256 i = checkInDate; i < checkoutDate; i++) {
-      property.isBooked[i] = true;
+    // Return the list of booking for a given rental
+    function getRentalBookings(uint256 _id)
+        external
+        view
+        isRental(_id)
+        returns (Booking[] memory)
+    {
+        return rentalBookings[_id];
     }
 
-      // Emit an event to notify clients
-    emit NewBooking(_propertyId, bookingId++);
+    function getRentalInfo(uint256 _id)
+        external
+        view
+        isRental(_id)
+        returns (RentalInfo memory)
+    {
+        return rentals[_id];
+    }
 
-  }
+    // ADMIN FUNCTIONS
+
+    function changeListingFee(uint256 _newFee) external onlyAdmin {
+        listingFee = _newFee;
+    }
+
+    function withdrawBalance() external onlyAdmin {
+        (bool success,) = payable(admin).call{value: address(this).balance}("");
+        if (!success) revert DecentralAirbnb__TransferFailed();
+    }
+}
