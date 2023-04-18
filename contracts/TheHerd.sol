@@ -34,27 +34,32 @@ contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Paus
     
 /// See also https://abhik.hashnode.dev/6-nuances-of-using-upgradeable-smart-contracts
 
-
   function initialize(address payable _wallet, uint256 initCost) initializer public {
     __ERC721_init("The Herd", "GOAT");
     __ERC721Enumerable_init();
     __Ownable_init();
     __Pausable_init();
     setBaseURI("");
-    setNotRevealedURI("https://wildcard-bay.vercel.app/api/"); 
+    setNotRevealedURI("https://wildcard-bay.vercel.app/api/");
     // setRoyalties(msg.sender, 300);
     cost = initCost;
-    maxSupply = 10000; 
-    maxMintAmount = 20; 
-    revealed = false; 
-    wallet = _wallet; 
+    maxSupply = 10000;
+    maxMintAmount = 20;
+    revealed = false;
+    wallet = _wallet;
     _tokenIdCounter.increment();
   }
 
+<<<<<<< HEAD
   function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override(ERC721, ERC721Enumerable) {
     require(!paused());
     super._beforeTokenTransfer(from, to, tokenId);
   }
+=======
+  function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+>>>>>>> 4eacd03aacb0d1a30dd77db0241cea685c69283b
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
