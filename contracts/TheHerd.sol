@@ -134,7 +134,7 @@ contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Paus
   function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
+        override(ERC721, ERC721Enumerable)
         returns (bool)
   {
       return super.supportsInterface(interfaceId);
