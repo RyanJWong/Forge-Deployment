@@ -127,7 +127,7 @@ contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Paus
 
     string memory currentBaseURI = _baseURI();
     return bytes(currentBaseURI).length > 0
-        ? string(abi.encodePacked(currentBaseURI, StringsUpgradeable.toString(tokenId), ".json"))
+        ? string(abi.encodePacked(currentBaseURI, Strings.toString(tokenId), ".json"))
         : "";
   }
 
