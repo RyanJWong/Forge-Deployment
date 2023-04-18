@@ -2,17 +2,17 @@
 
 pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/Counters.sol";
+import "@openzeppelin/contracts-upgradeable/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ERC721Royalty.sol";
 
-contract TheHerd is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721Royalty, PausableUpgradeable, OwnableUpgradeable {
+contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Pausable, Ownable {
   using CountersUpgradeable for CountersUpgradeable.Counter;
   using SafeMath for uint256;
 
@@ -50,9 +50,16 @@ contract TheHerd is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeabl
     _tokenIdCounter.increment();
   }
 
+<<<<<<< HEAD
+  function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override(ERC721, ERC721Enumerable) {
+    require(!paused());
+    super._beforeTokenTransfer(from, to, tokenId);
+  }
+=======
   function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
+>>>>>>> 4eacd03aacb0d1a30dd77db0241cea685c69283b
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
