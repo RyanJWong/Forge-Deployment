@@ -21,7 +21,8 @@ jobs:
         run: git config --global user.email "dylanwong07@gmail.com" && forge install openzeppelin/openzeppelin-contracts-upgradeable
         
       - name: Install dependencies
-        run: forge install @openzeppelin/openzeppelin-contracts-upgradeable
+        run: forge install openzeppelin/openzeppelin-contracts-upgradeable --remappings $(cat forge-remappings.txt)
+
 
     
       - name: Deploy
