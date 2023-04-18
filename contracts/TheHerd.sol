@@ -13,11 +13,11 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ERC721Royalty.sol";
 
 contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Pausable, Ownable {
-  using CountersUpgradeable for CountersUpgradeable.Counter;
+  using Counters for Counters.Counter;
   using SafeMath for uint256;
 
   event NFTMinted(address indexed purchaser, uint256 indexed id);
-  CountersUpgradeable.Counter private _tokenIdCounter;
+  Counters.Counter private _tokenIdCounter;
 
   string private baseURI;
   uint256 private cost;
