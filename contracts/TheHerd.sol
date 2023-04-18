@@ -3,6 +3,7 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/security/Pausable.sol";
@@ -53,7 +54,6 @@ contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Paus
     require(!paused());
     super._beforeTokenTransfer(from, to, tokenId);
   }
-
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
