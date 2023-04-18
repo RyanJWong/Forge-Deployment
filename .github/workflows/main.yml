@@ -26,7 +26,6 @@ jobs:
       - name: Update remappings
         run: forge remappings > remappings.txt
 
-    
       - name: Deploy
         run: forge create contracts/TheHerd.sol:TheHerd --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
 
