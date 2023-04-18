@@ -21,11 +21,9 @@ jobs:
         run: git config --global user.email "dylanwong07@gmail.com" && forge install openzeppelin/openzeppelin-contracts-upgradeable
         
       - name: Install dependencies
-        run: forge install openzeppelin/openzeppelin-contracts-upgradeable
+        run: forge install @openzeppelin/openzeppelin-contracts-upgradeable
 
-      - name: Apply remappings
-        run: forge remap --file forge-remappings.txt
-        
+    
       - name: Deploy
         run: forge create contracts/TheHerd.sol:TheHerd --rpc-url https://goerli.infura.io/v3/57ce29b969b5410897a117fb29254b41 --private-key ${{ secrets.PRIV }} 
 
