@@ -49,16 +49,11 @@ contract TheHerd is Initializable, ERC721, ERC721Enumerable, ERC721Royalty, Paus
     _tokenIdCounter.increment();
   }
 
-<<<<<<< HEAD
   function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override(ERC721, ERC721Enumerable) {
     require(!paused());
     super._beforeTokenTransfer(from, to, tokenId);
   }
-=======
-  function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
->>>>>>> 4eacd03aacb0d1a30dd77db0241cea685c69283b
+
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
