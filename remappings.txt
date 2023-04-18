@@ -1,5 +1,4 @@
 ds-test/=lib/ds-test/src/
-@openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable
-@openzeppelin-contracts/=lib/openzeppelin-contracts
-
+@openzeppelin-contracts-upgradeable/=https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tree/release-v4.7
+@openzeppelin-contracts/=https://github.com/OpenZeppelin/openzeppelin-contracts/tree/release-v4.7
 @ens/=lib/ens-contracts/
