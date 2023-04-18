@@ -24,7 +24,7 @@ jobs:
         run: forge install @openzeppelin/openzeppelin-contracts-upgradeable 
 
       - name: Update remappings
-        run: forge update-remappings --from @openzeppelin/contracts-upgradeable=/home/runner/work/Forge-Deployment/Forge-Deployment/lib/openzeppelin-contracts-upgradeable
+        run: forge remappings > remappings.txt
 
     
       - name: Deploy
