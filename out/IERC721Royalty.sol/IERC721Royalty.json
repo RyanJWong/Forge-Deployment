@@ -1,0 +1,338 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "royaltyInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "_receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_royaltyAmount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "royaltyInfo(uint256,uint256)": "2a55205a"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"royaltyInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_royaltyAmount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for the ERC721 - Token Royalty\",\"kind\":\"dev\",\"methods\":{\"royaltyInfo(uint256,uint256)\":{\"params\":{\"_tokenId\":\"- the NFT asset queried for royalty information\",\"_value\":\"- the sale price of the NFT asset specified by _tokenId\"},\"returns\":{\"_receiver\":\"- address of who should be sent the royalty payment\",\"_royaltyAmount\":\"- the royalty payment amount for value sale price\"}}},\"title\":\"IERC721Royalty\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IERC721Royalty.sol\":\"IERC721Royalty\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/openzeppelin-contracts/lib/forge-std/src/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"contracts/IERC721Royalty.sol\":{\"keccak256\":\"0x613e4747c3d67a0c9e793d8a8684d12093c7bc0db84087898cfb49ecc857c3ad\",\"urls\":[\"bzz-raw://a985a61cccf64e23ab57def7445191d3a83ba1e8d6e89fe548dc221e90c6d47d\",\"dweb:/ipfs/QmS349AexKFbvgDMpy4KoHkvHMmxGV83ja8mUvw2pSEBp8\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.10+commit.fc410830"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_value",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "royaltyInfo",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "_receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_royaltyAmount",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "royaltyInfo(uint256,uint256)": {
+            "params": {
+              "_tokenId": "- the NFT asset queried for royalty information",
+              "_value": "- the sale price of the NFT asset specified by _tokenId"
+            },
+            "returns": {
+              "_receiver": "- address of who should be sent the royalty payment",
+              "_royaltyAmount": "- the royalty payment amount for value sale price"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/openzeppelin-contracts/lib/forge-std/src/",
+        ":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/IERC721Royalty.sol": "IERC721Royalty"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/IERC721Royalty.sol": {
+        "keccak256": "0x613e4747c3d67a0c9e793d8a8684d12093c7bc0db84087898cfb49ecc857c3ad",
+        "urls": [
+          "bzz-raw://a985a61cccf64e23ab57def7445191d3a83ba1e8d6e89fe548dc221e90c6d47d",
+          "dweb:/ipfs/QmS349AexKFbvgDMpy4KoHkvHMmxGV83ja8mUvw2pSEBp8"
+        ],
+        "license": null
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/IERC721Royalty.sol",
+    "id": 379,
+    "exportedSymbols": {
+      "IERC721Royalty": [
+        378
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "0:699:3",
+    "nodes": [
+      {
+        "id": 364,
+        "nodeType": "PragmaDirective",
+        "src": "0:23:3",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".2"
+        ]
+      },
+      {
+        "id": 378,
+        "nodeType": "ContractDefinition",
+        "src": "101:597:3",
+        "nodes": [
+          {
+            "id": 377,
+            "nodeType": "FunctionDefinition",
+            "src": "551:145:3",
+            "nodes": [],
+            "documentation": {
+              "id": 366,
+              "nodeType": "StructuredDocumentation",
+              "src": "242:304:3",
+              "text": "@param _tokenId - the NFT asset queried for royalty information\n @param _value - the sale price of the NFT asset specified by _tokenId\n @return _receiver - address of who should be sent the royalty payment\n @return _royaltyAmount - the royalty payment amount for value sale price"
+            },
+            "functionSelector": "2a55205a",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "royaltyInfo",
+            "nameLocation": "560:11:3",
+            "parameters": {
+              "id": 371,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 368,
+                  "mutability": "mutable",
+                  "name": "_tokenId",
+                  "nameLocation": "580:8:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 377,
+                  "src": "572:16:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 367,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "572:7:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 370,
+                  "mutability": "mutable",
+                  "name": "_value",
+                  "nameLocation": "598:6:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 377,
+                  "src": "590:14:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 369,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "590:7:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "571:34:3"
+            },
+            "returnParameters": {
+              "id": 376,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 373,
+                  "mutability": "mutable",
+                  "name": "_receiver",
+                  "nameLocation": "661:9:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 377,
+                  "src": "653:17:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 372,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "653:7:3",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 375,
+                  "mutability": "mutable",
+                  "name": "_royaltyAmount",
+                  "nameLocation": "680:14:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 377,
+                  "src": "672:22:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 374,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "672:7:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "652:43:3"
+            },
+            "scope": 378,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IERC721Royalty",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 365,
+          "nodeType": "StructuredDocumentation",
+          "src": "25:76:3",
+          "text": "@title IERC721Royalty\n @dev Interface for the ERC721 - Token Royalty"
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          378
+        ],
+        "name": "IERC721Royalty",
+        "nameLocation": "111:14:3",
+        "scope": 379,
+        "usedErrors": []
+      }
+    ]
+  },
+  "id": 3
+}

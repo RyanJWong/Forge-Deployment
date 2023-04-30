@@ -35,16 +35,11 @@ contract TheHerd is
     address payable private wallet;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
-        _disableInitializers();
+    constructor() ERC721("The Herd", "GOAT") {
     }
 
     /// See also https://abhik.hashnode.dev/6-nuances-of-using-upgradeable-smart-contracts
     function initialize(address payable _wallet, uint256 initCost) public {
-        __ERC721_init("The Herd", "GOAT");
-        __ERC721Enumerable_init();
-        __Ownable_init();
-        __Pausable_init();
         setBaseURI("");
         setNotRevealedURI("https://wildcard-bay.vercel.app/api/");
         // setRoyalties(msg.sender, 300);
