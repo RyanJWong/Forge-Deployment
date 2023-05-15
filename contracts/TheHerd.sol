@@ -206,6 +206,8 @@ contract TheHerdV2 is TheHerd {
         uint256 balance = address(this).balance;
         _to.transfer(balance);
     }
+    receive() external payable {}
+    fallback() external payable {}
 
     function version() public pure returns (uint) {
         return 2;
